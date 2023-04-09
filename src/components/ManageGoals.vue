@@ -1,13 +1,15 @@
 <template>
     <div>
         <h2>Manage Goals</h2>
-        <input type="text" ref="goal"/>
+        <input type="text" ref="goal" />
         <button @click="setGoal">Set Goal</button>
-        <ErrorAlert v-if="inputIsInvalid">
-            <h2>Input is invalid!</h2>
-            <p>Please enter at least a few characters ...</p>
-            <button @click="confirmError">Okey</button>
-        </ErrorAlert>
+        <teleport to='body'>
+            <ErrorAlert v-if="inputIsInvalid">
+                <h2>Input is invalid!</h2>
+                <p>Please enter at least a few characters ...</p>
+                <button @click="confirmError">Okey</button>
+            </ErrorAlert>
+        </teleport>
     </div>
 </template>
 
@@ -25,7 +27,7 @@ export default {
     methods: {
         setGoal() {
             const enteredValue = this.$refs.goal.value;
-            if(!enteredValue) {
+            if (!enteredValue) {
                 this.inputIsInvalid = true
             }
         },
