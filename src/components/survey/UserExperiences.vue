@@ -8,6 +8,11 @@
 				>
 			</div>
 			<p v-if="isLoading">Loading...</p>
+			<p v-else-if="!isLoading && error">{{ error }}</p>
+			<p v-else-if="!isLoading && (!results || results.length === 0)">
+				No stored experiences found. Start adding some survey results
+				first.
+			</p>
 			<ul v-else>
 				<survey-result
 					v-for="result in results"
@@ -21,7 +26,6 @@
 </template>
 
 <script>
-import axios from "axios";
 import SurveyResult from "./SurveyResult.vue";
 
 export default {
@@ -32,32 +36,36 @@ export default {
 		return {
 			results: [],
 			isLoading: false,
+			error: null,
 		};
 	},
 	methods: {
 		loadExperiences() {
 			this.isLoading = true;
-			axios
-				.get(
-					"https://vue-http-demo-165b7-default-rtdb.asia-southeast1.firebasedatabase.app/surveys.json",
-					{
-						name: this.enteredName,
-						rating: this.chosenRating,
+			this.error = null;
+			fetch("https://vue-http-demo-165b7-default-rtdb.asia-southeast1.firebasedatabase.app/surveys.json")
+				.then((response) => {
+					if (response.ok) {
+						return response.json();
 					}
-				)
+				})
 				.then((data) => {
-                    if(data.status === 200) {
-                        this.isLoading = false;
-                        const results = [];
-                        for (const id in data.data) {
-                            results.push({
-                                id: id,
-                                name: data.data[id].name,
-                                rating: data.data[id].rating,
-                            });
-                        }
-                        this.results = results;
-                    }
+					this.isLoading = false;
+					const results = [];
+					for (const id in data) {
+						results.push({
+							id: id,
+							name: data[id].name,
+							rating: data[id].rating,
+						});
+					}
+					this.results = results;
+				})
+				.catch((error) => {
+					console.log(error);
+					this.isLoading = false;
+					this.error =
+						"Failed to fetch data - please try again later.";
 				});
 		},
 	},
