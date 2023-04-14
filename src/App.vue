@@ -56,4 +56,8 @@ html {
 body {
 	margin: 0;
 }
+html {
+	font-family: sans-serif;
+	scroll-behavior: smooth;
+}
 </style>
