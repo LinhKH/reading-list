@@ -2,6 +2,7 @@
 
 ## Project setup
 ```
+"serve": "set NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service serve",
 npm install
 ```
 
